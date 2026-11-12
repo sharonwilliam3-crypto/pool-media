@@ -1,0 +1,61 @@
+name: Daily Pool story
+
+on:
+  schedule:
+    - cron: "30 12 * * *"   # every day at 18:00 India time (GitHub may start it a few minutes late)
+  workflow_dispatch:         # lets you run it by hand from the Actions tab
+    inputs:
+      dry_run:
+        description: "Make the media but don't publish"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: daily-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install tools
+        run: |
+          pip install pillow
+          which ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
+
+      - name: Make today's story (and feed post on Mon/Wed/Fri)
+        run: |
+          export POST_DATE=$(TZ=Asia/Kolkata date +%F)
+          echo "POST_DATE=$POST_DATE" >> $GITHUB_ENV
+          python generate.py --date "$POST_DATE"
+          mkdir -p site && cp out/* site/ && echo "Pool media" > site/index.html
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Put the media online (GitHub Pages)
+        id: pages
+        uses: actions/deploy-pages@v4
+
+      - name: Publish to Instagram
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          MEDIA_BASE_URL: ${{ steps.pages.outputs.page_url }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
+        run: python post.py
