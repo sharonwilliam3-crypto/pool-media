@@ -1,0 +1,43 @@
+name: Refresh Instagram token
+
+# Instagram tokens expire after 60 days. This renews it every week and saves the new one.
+# It also commits a small file so GitHub doesn't pause the daily schedule
+# (GitHub pauses scheduled workflows in repos with no activity for 60 days).
+
+on:
+  schedule:
+    - cron: "0 3 * * 1"   # Mondays, 08:30 India time
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Renew token
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          resp=$(curl -sf "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=$IG_TOKEN") \
+            || { echo "::error::Token refresh failed. Make a new token and update the IG_TOKEN secret."; exit 1; }
+          new=$(echo "$resp" | python -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
+          days=$(echo "$resp" | python -c "import sys,json; print(json.load(sys.stdin)['expires_in']//86400)")
+          echo "::add-mask::$new"
+          if [ -n "$GH_TOKEN" ]; then
+            gh secret set IG_TOKEN --body "$new" --repo "$GITHUB_REPOSITORY"
+            echo "Token renewed, valid for $days more days."
+          else
+            echo "::warning::Token extended to $days days, but GH_PAT isn't set, so the secret wasn't updated. See SETUP.md step 6."
+          fi
+
+      - name: Keep the schedule active
+        run: |
+          date -u +%F > .keepalive
+          git config user.name "pool-bot"
+          git config user.email "pool-bot@users.noreply.github.com"
+          git add .keepalive && git commit -m "keepalive" && git push || true
