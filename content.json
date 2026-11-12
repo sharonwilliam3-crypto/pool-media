@@ -1,0 +1,36 @@
+{
+  "site": "poolcampus.web.app",
+  "handle_note": "Edit anything in this file. The generator picks a different item / tip each day, so nothing repeats for weeks.",
+  "items": [
+    {"name": "scientific calculator", "buy": 1300, "rate": 30, "when": "EXAM WEEK?"},
+    {"name": "lab coat", "buy": 450, "rate": 15, "when": "LAB TOMORROW?"},
+    {"name": "mini drafter", "buy": 900, "rate": 25, "when": "ED CLASS?"},
+    {"name": "stethoscope", "buy": 2500, "rate": 50, "when": "WARD POSTING?"},
+    {"name": "Arduino kit", "buy": 1800, "rate": 60, "when": "PROJECT DUE?"},
+    {"name": "DSLR camera", "buy": 45000, "rate": 600, "when": "FEST SHOOT?"},
+    {"name": "formal blazer", "buy": 3000, "rate": 150, "when": "PLACEMENT DAY?"},
+    {"name": "trekking backpack", "buy": 2500, "rate": 80, "when": "WEEKEND TRIP?"},
+    {"name": "fest outfit", "buy": 4000, "rate": 250, "when": "CULTURAL NIGHT?"},
+    {"name": "Bluetooth speaker", "buy": 2500, "rate": 80, "when": "HOSTEL PARTY?"},
+    {"name": "badminton racket", "buy": 1500, "rate": 40, "when": "TOURNAMENT?"},
+    {"name": "semester textbook", "buy": 800, "rate": 20, "when": "NEW SEMESTER?"}
+  ],
+  "tips": [
+    "Buying something for one exam? Ask: will I use it again after this semester?",
+    "Project team of five? You need one kit, not five.",
+    "Keep a 'once a year' list. Those are things to borrow, not buy.",
+    "A calculator sitting in your drawer earns nothing. Lend it.",
+    "Fest coming up? Borrow the outfit. Spend on the experience.",
+    "Check the item together at pickup. A quick photo protects both of you.",
+    "Return on time. Your trust score is your campus reputation.",
+    "Set your deposit close to what the item would cost to replace.",
+    "Buying a 2,000 rupee thing for a 2-hour lab? Borrow it.",
+    "Seniors have everything you need. Pool just makes asking easier."
+  ],
+  "steps": [
+    ["Find it", "Search items listed by verified students at your college"],
+    ["Request", "Pick your dates and send a request. It's free"],
+    ["Meet on campus", "Pick it up at a spot you both know, use it, return it"]
+  ],
+  "hashtags": "#Pool #BorrowDontBuy #Hyderabad #HyderabadColleges #CollegeLife #StudentLife #EngineeringLife #MedicalStudent #Hostellife"
+}
